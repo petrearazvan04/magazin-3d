@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Print Store - Obiecte unicat</title>
+    <!-- Tailwind CSS pentru stilizare -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome pentru iconițe -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            orange: '#f97316', // Portocaliu vibrant
+                            dark: '#0f172a',   // Slate 900
+                            light: '#f8fafc',  // Slate 50
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .product-card:hover .product-img { transform: scale(1.05); }
+        .product-img { transition: transform 0.3s ease; }
+        
+        /* Custom Toast Notification */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background-color: #1e293b;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.3s forwards, fadeOut 0.3s forwards 2.7s;
+        }
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="bg-brand-light text-slate-800">
+
+    <!-- Navigare -->
+    <nav class="bg-brand-dark text-white sticky top-0 z-40 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-cube text-brand-orange text-2xl"></i>
+                    <span class="font-bold text-xl tracking-tight">PrintCraft<span class="text-brand-orange">3D</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#acasa" class="hover:text-brand-orange transition">Acasă</a>
+                    <a href="#cum-functioneaza" class="hover:text-brand-orange transition">Cum funcționează</a>
+                    <a href="#produse" class="hover:text-brand-orange transition">Produse</a>
+                </div>
+                <div class="flex items-center">
+                    <button id="cart-btn" class="relative p-2 text-white hover:text-brand-orange transition">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-brand-orange rounded-full">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="acasa" class="bg-brand-dark text-white relative overflow-hidden">
+        <!-- Abstract background pattern -->
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#f97316 1px, transparent 1px); background-size: 30px 30px;"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 relative z-10 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 text-center md:text-left mb-10 md:mb-0">
+                <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
+                    Obiecte printate 3D, <br> create <span class="text-brand-orange">special pentru tine.</span>
+                </h1>
+                <p class="text-lg text-slate-300 mb-8 max-w-lg mx-auto md:mx-0">
+                    De la decorațiuni moderne la organizatoare practice. Calitate premium, printate la cerere folosind tehnologie de ultimă generație.
+                </p>
+                <a href="#produse" class="inline-block bg-brand-orange text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-orange-600 transition transform hover:-translate-y-1">
+                    Vezi Colecția
+                </a>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <!-- Placeholder pentru o imagine cu un print 3D cool -->
+                <img src="https://placehold.co/500x500/1e293b/f97316?text=Imagine+Print+3D\n(ex:+Suport+Casti)" alt="3D Printed Object" class="rounded-2xl shadow-2xl border-4 border-slate-800 transform rotate-3 hover:rotate-0 transition duration-500 w-full max-w-md">
+            </div>
+        </div>
+    </section>
+
+    <!-- Cum functioneaza -->
+    <section id="cum-functioneaza" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-brand-dark">Cum funcționează comanda?</h2>
+                <p class="mt-4 text-slate-500">Zero stocuri inutile. Fiecare produs este creat special pentru tine.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                <!-- Pasul 1 -->
+                <div class="p-6 rounded-xl bg-slate-50 border border-slate-100 shadow-sm">
+                    <div class="w-16 h-16 mx-auto bg-brand-orange text-white rounded-full flex items-center justify-center text-2xl font-bold mb-4 shadow-md">
+                        <i class="fa-solid fa-computer-mouse"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">1. Alegi Produsul</h3>
+                    <p class="text-slate-600">Selectezi modelul preferat și culorile din galeria noastră de produse.</p>
+                </div>
+                <!-- Pasul 2 -->
+                <div class="p-6 rounded-xl bg-slate-50 border border-slate-100 shadow-sm relative">
+                    <!-- Săgeată conectoare (desktop) -->
+                    <div class="hidden md:block absolute top-1/4 -left-6 text-slate-300 text-3xl"><i class="fa-solid fa-arrow-right"></i></div>
+                    <div class="hidden md:block absolute top-1/4 -right-6 text-slate-300 text-3xl"><i class="fa-solid fa-arrow-right"></i></div>
+                    
+                    <div class="w-16 h-16 mx-auto bg-brand-dark text-white rounded-full flex items-center justify-center text-2xl font-bold mb-4 shadow-md">
+                        <i class="fa-solid fa-print"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">2. Îl Printăm</h3>
+                    <p class="text-slate-600">Imprimanta pornește treaba. Folosim materiale durabile și ecologice (PLA).</p>
+                </div>
+                <!-- Pasul 3 -->
+                <div class="p-6 rounded-xl bg-slate-50 border border-slate-100 shadow-sm">
+                    <div class="w-16 h-16 mx-auto bg-brand-orange text-white rounded-full flex items-center justify-center text-2xl font-bold mb-4 shadow-md">
+                        <i class="fa-solid fa-truck-fast"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">3. Livrare Rapidă</h3>
+                    <p class="text-slate-600">În 24-48h produsul este gata și pleacă spre tine prin curier.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Produse -->
+    <section id="produse" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-end mb-12 border-b border-slate-200 pb-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-brand-dark">Cele mai vândute</h2>
+                    <p class="mt-2 text-slate-500">Designuri testate și adorate de clienți.</p>
+                </div>
+            </div>
+
+            <!-- Grid Produse -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Produs 1 -->
+                <div class="product-card bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col relative group">
+                    <div class="overflow-hidden h-56 bg-slate-100 relative">
+                        <img src="https://placehold.co/400x300/e2e8f0/475569?text=Organizator+Birou" alt="Organizator Birou" class="product-img w-full h-full object-cover">
+                        <span class="absolute top-2 left-2 bg-brand-dark text-white text-xs font-bold px-2 py-1 rounded">Bestseller</span>
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-800 mb-1">Organizator Birou Hexagonal</h3>
+                            <p class="text-sm text-slate-500 mb-3">Perfect pentru pixuri și accesorii. Printat în 2 culori.</p>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="font-bold text-xl text-brand-dark">45 Lei</span>
+                            <button onclick="addToCart('Organizator Birou', 45)" class="bg-brand-orange hover:bg-orange-600 text-white rounded-full w-10 h-10 flex items-center justify-center transition shadow-md">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Produs 2 -->
+                <div class="product-card bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col group">
+                    <div class="overflow-hidden h-56 bg-slate-100">
+                        <img src="https://placehold.co/400x300/e2e8f0/475569?text=Pisica+Perete" alt="Decor Pisică" class="product-img w-full h-full object-cover">
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-800 mb-1">Decorațiune Perete "Pisică"</h3>
+                            <p class="text-sm text-slate-500 mb-3">Artă geometrică pentru perete. Se lipește ușor cu dublă adezivă.</p>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="font-bold text-xl text-brand-dark">35 Lei</span>
+                            <button onclick="addToCart('Decor Pisică', 35)" class="bg-brand-orange hover:bg-orange-600 text-white rounded-full w-10 h-10 flex items-center justify-center transition shadow-md">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Produs 3 -->
+                <div class="product-card bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col group">
+                    <div class="overflow-hidden h-56 bg-slate-100">
+                        <img src="https://placehold.co/400x300/e2e8f0/475569?text=Suport+Telefon" alt="Suport Telefon" class="product-img w-full h-full object-cover">
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-800 mb-1">Suport Telefon Articulat</h3>
+                            <p class="text-sm text-slate-500 mb-3">Ajustabil pe 3 unghiuri. Print-in-place (fără asamblare).</p>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="font-bold text-xl text-brand-dark">25 Lei</span>
+                            <button onclick="addToCart('Suport Telefon', 25)" class="bg-brand-orange hover:bg-orange-600 text-white rounded-full w-10 h-10 flex items-center justify-center transition shadow-md">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Produs 4 -->
+                <div class="product-card bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col group">
+                    <div class="overflow-hidden h-56 bg-slate-100">
+                        <img src="https://placehold.co/400x300/e2e8f0/475569?text=Breloc+Custom" alt="Breloc Personalizat" class="product-img w-full h-full object-cover">
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-800 mb-1">Breloc Personalizat (Nume)</h3>
+                            <p class="text-sm text-slate-500 mb-3">Breloc cu numele tău, realizat în 2 culori la alegere.</p>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="font-bold text-xl text-brand-dark">15 Lei</span>
+                            <button onclick="addToCart('Breloc Custom', 15)" class="bg-brand-orange hover:bg-orange-600 text-white rounded-full w-10 h-10 flex items-center justify-center transition shadow-md">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark text-slate-400 py-12 border-t-4 border-brand-orange">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4 text-white">
+                    <i class="fa-solid fa-cube text-brand-orange text-xl"></i>
+                    <span class="font-bold text-lg tracking-tight">PrintCraft<span class="text-brand-orange">3D</span></span>
+                </div>
+                <p class="text-sm mb-4">Transformăm filamentul în idei palpabile. Studio de printare 3D la comandă.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-4">Informații</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-brand-orange transition">Termeni și Condiții</a></li>
+                    <li><a href="#" class="hover:text-brand-orange transition">Politica de Retur</a></li>
+                    <li><a href="#" class="hover:text-brand-orange transition">Timp de execuție</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-4">Contact</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><i class="fa-solid fa-envelope mr-2"></i> contact@printcraft3d.ro</li>
+                    <li><i class="fa-brands fa-instagram mr-2 text-xl hover:text-white cursor-pointer transition"></i> @printcraft.3d</li>
+                    <li><i class="fa-brands fa-tiktok mr-2 text-xl hover:text-white cursor-pointer transition"></i> @printcraft.3d</li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-8 border-t border-slate-700 text-sm text-center">
+            &copy; 2026 PrintCraft3D. Toate drepturile rezervate.
+        </div>
+    </footer>
+
+    <!-- Container pentru Notificari (Toast) -->
+    <div id="toast-container"></div>
+
+    <!-- Script pentru logica de baza -->
+    <script>
+        let cartItems = 0;
+
+        function addToCart(productName, price) {
+            // Actualizam contorul
+            cartItems++;
+            const cartBadge = document.getElementById('cart-count');
+            cartBadge.textContent = cartItems;
+            
+            // Animatie mica pentru cos
+            cartBadge.classList.add('scale-125');
+            setTimeout(() => cartBadge.classList.remove('scale-125'), 200);
+
+            // Aratam notificarea
+            showToast(`Ai adăugat <b>${productName}</b> în coș!`);
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <div class="bg-green-500 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-check text-white text-xs"></i>
+                </div>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Curatam din DOM dupa ce se termina animatia (3 secunde)
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
